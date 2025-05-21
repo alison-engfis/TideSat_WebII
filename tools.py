@@ -106,6 +106,7 @@ def configurar_layout():
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         .stActionButton {display: none;}
+        a[href^="https://streamlit.io/cloud"] {display: none !important;}
         </style>
         """
     st.markdown(esconder, unsafe_allow_html=True)
