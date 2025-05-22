@@ -60,6 +60,16 @@ ESTACOES_PORTOS = {
         "cota_inundacao": " "
     },
 
+    "PCT1": {
+        "descricao": "PCT1 - Ponta dos Coatis",
+        "url": "https://app.tidesatglobal.com/pct1/pct1_out.csv",
+        "coord": [-30.02703, -51.23166],
+        "descricao_imagem": "Estação NSR1 - Foz do Rio Caí",
+        "caminho_imagem": " ",
+        "cota_alerta": " ",
+        "cota_inundacao": " "
+    },
+
     "SJR1": {
         "descricao": "SJR1 - Praia de São Jerônimo",
         "url": "https://app.tidesatglobal.com/sjr1/sjr1_out.csv",
