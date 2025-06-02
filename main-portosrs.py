@@ -17,7 +17,7 @@ lang = LANG[idioma]
 estacoes_info = ESTACOES_PORTOS
 estacao_padrao = ESTACAO_PADRAO_PORTOS
 tz_padrao = TIMEZONE_PADRAO
-logotipo = "portosrs_logo.png"
+logotipo = "portos_pga.png"
 html_logo = "https://www.portosrs.com.br/site/"
 
 main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, tz_padrao)
