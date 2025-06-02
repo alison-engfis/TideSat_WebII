@@ -384,6 +384,22 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
     data_inicio = st.session_state["dados_inicio"]
     data_fim = st.session_state["dados_fim"]
 
+    # Ajusta a data de início se estiver usando o período inteiro
+    if "ultimo_periodo" in st.session_state and st.session_state["ultimo_periodo"] == "inteiro":
+
+        try:
+
+            df_est6 = carregar_dados(estacoes_info["EST6"]["url"])
+            df_est6['datetime_ajustado'] = df_est6['datetime_utc'].dt.tz_convert(fuso)
+            primeira_data_est6 = df_est6['datetime_ajustado'].min().date()
+
+            # Limita a data de início ao início da EST6, se for anterior
+            if st.session_state["dados_inicio"] < primeira_data_est6:
+                st.session_state["dados_inicio"] = primeira_data_est6
+                
+        except Exception as e:
+            st.warning(f"Não foi possível limitar o período pela estação EST6: {e}")
+
     estacoes_alvo = ["EST1", "EST2", "EST3", "EST6"]
 
     tracos = []
