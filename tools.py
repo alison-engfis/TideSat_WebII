@@ -289,14 +289,22 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
 
     elif (dados_fim - dados_inicio) >= pd.Timedelta(days=7):  # Inclui Período Inteiro
 
+        df = carregar_dados(url)
+
         from main_estrela_config import ESTACOES_ESTRELA
 
          # Verifica se está rodando no app de Estrela
         if estacoes_info == ESTACOES_ESTRELA:
 
-            max_nivel = 21
-            df = carregar_dados(url)
-            min_nivel = df['water_level(m)'].min()
+            if estacao_selecionada == ESTACOES_ESTRELA["EST5"]:
+
+                max_nivel = 44
+                min_nivel = df['water_level(m)'].min()
+
+            else:
+
+                max_nivel = 21
+                min_nivel = df['water_level(m)'].min()
 
         else:
             # Comportamento padrão
