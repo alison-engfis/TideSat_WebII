@@ -168,6 +168,10 @@ def carregar_dados(url):
         # Adiciona a coluna de data UTC
         df['datetime_utc'] = df['datetime'].dt.tz_localize('UTC')
 
+        # 🆕 Remove a última hora de dados
+        limite = df['datetime_utc'].max() - pd.Timedelta(hours=1)
+        df = df[df['datetime_utc'] <= limite]
+
         return df
 
 # Função do seletor de fuso
