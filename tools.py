@@ -376,10 +376,8 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
     # Exibe o gráfico
     st.plotly_chart(fig, use_container_width=True, config=config)
 
-
+# Função que configura a exibição do gráfico de sobreposição (exclusivo para tidesat-estrela)
 def plotar_sobreposicao_estrela(estacoes_info, lang):
-
-    st.markdown("### 📊 Comparação entre Estações de Estrela")
 
     # Pega o fuso e o período selecionado
     fuso = st.session_state["fuso_selecionado"]
@@ -387,7 +385,7 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
     data_fim = st.session_state["dados_fim"]
 
     # Estações fixas da cidade de Estrela
-    estacoes_alvo = ["EST1", "EST2", "EST3", "EST5", "EST6"]
+    estacoes_alvo = ["EST1", "EST2", "EST3", "EST6"]
     tracos = []
 
     for cod in estacoes_alvo:
@@ -415,7 +413,6 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
         return
 
     layout = go.Layout(
-        title="Sobreposição de Nível d'Água nas Estações de Estrela",
         xaxis_title="Data/Hora",
         yaxis_title="Nível (m)",
         height=550
@@ -674,22 +671,31 @@ def main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, timezone_padr
                     st.markdown("<br>", unsafe_allow_html=True)
 
         with col_grafico:
+
             with st.container():
 
-                dados_filtrados = filtrar_dados(st.session_state["dados_estacao"], st.session_state["dados_inicio"],
-                    st.session_state["dados_fim"], st.session_state["fuso_selecionado"])
-                
-                # Aplica o corte de 1h apenas para fins gráficos
-                dados_filtrados = corte_ultima_1h(dados_filtrados)
+                # Se for o app de Estrela e o cliente desejar sobreposição
+                usar_sobreposicao = False
 
-                cota_alerta, cota_inundacao = cotas_notaveis(estacao_selecionada, estacoes_info)
+                from main_estrela_config import ESTACOES_ESTRELA
 
-                plotar_grafico(url_estacao, estacoes_info, dados_filtrados, estacao_selecionada, cota_alerta, cota_inundacao, 
-                               st.session_state["dados_inicio"], st.session_state["dados_fim"], lang)
-                
-                if st.button("🔍 Comparar estações de Estrela"):
-        
+                if estacoes_info == ESTACOES_ESTRELA:
+                    usar_sobreposicao = st.toggle("🔁 Comparar estações", value=False)
+
+                if usar_sobreposicao:
                     plotar_sobreposicao_estrela(estacoes_info, lang)
+
+                else:
+                    dados_filtrados = filtrar_dados(
+                        st.session_state["dados_estacao"],
+                        st.session_state["dados_inicio"],
+                        st.session_state["dados_fim"],
+                        st.session_state["fuso_selecionado"]
+                    )
+                    cota_alerta, cota_inundacao = cotas_notaveis(estacao_selecionada, estacoes_info)
+
+                    plotar_grafico(url_estacao, estacoes_info, dados_filtrados, estacao_selecionada, cota_alerta, cota_inundacao, 
+                                   st.session_state["dados_inicio"], st.session_state["dados_fim"], lang)
 
     _, col_modo, col_fuso, _ = st.columns([0.5, 1, 1.3, 0.5], gap="small", vertical_alignment="top")
 
