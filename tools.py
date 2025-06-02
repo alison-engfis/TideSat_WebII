@@ -384,9 +384,12 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
     data_inicio = st.session_state["dados_inicio"]
     data_fim = st.session_state["dados_fim"]
 
-    # Estações fixas da cidade de Estrela
-    estacoes_alvo = ["EST1", "EST2", "EST3", "EST6"]
+    estacoes_alvo = ["EST1", "EST2", "EST3", "EST6"]  # Excluímos a EST5
+
     tracos = []
+    todos_valores = []
+
+    cor_linha, _, _, _, _ = obter_tema()
 
     for cod in estacoes_alvo:
         est = estacoes_info.get(cod)
@@ -398,11 +401,14 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
             df['datetime_ajustado'] = df['datetime_utc'].dt.tz_convert(fuso)
             df_filtrado = filtrar_dados(df, data_inicio, data_fim, fuso)
 
+            todos_valores.extend(df_filtrado["water_level(m)"].tolist())
+
             tracos.append(go.Scatter(
                 x=np.array(df_filtrado["datetime_ajustado"]),
                 y=df_filtrado["water_level(m)"],
                 mode='lines',
-                name=est["descricao"]
+                name=est["descricao"],
+                line=dict(width=2)
             ))
 
         except Exception as e:
@@ -412,13 +418,41 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
         st.error("Nenhum dado foi carregado para as estações selecionadas.")
         return
 
-    layout = go.Layout(
-        xaxis_title="Data/Hora",
-        yaxis_title="Nível (m)",
-        height=550
+    # Eixo Y: ajuste para últimos 24h ou período total
+    yaxis_range = None
+    delta_periodo = pd.to_datetime(data_fim) - pd.to_datetime(data_inicio)
+
+    if delta_periodo == timedelta(hours=24):
+        med = np.median(todos_valores)
+        yaxis_range = [med - 0.5, med + 0.5]
+
+    elif delta_periodo >= timedelta(days=7):
+        yaxis_range = [min(todos_valores), max(todos_valores)]
+
+    fig = go.Figure(data=tracos)
+
+    fig.update_layout(
+        title="Sobreposição de Nível d'Água nas Estações de Estrela",
+        xaxis_title="Data" if lang["lang_code"] == "pt" else "Date",
+        yaxis_title="Nível (m)" if lang["lang_code"] == "pt" else "Water level (m)",
+        font={'size': 18},
+        height=430,
+        margin=dict(l=40, r=0.1, t=40, b=40),
+        legend=dict(
+            orientation='v',
+            yanchor='bottom',
+            y=1.01,
+            xanchor='left',
+            x=0.04,
+            font=dict(size=11),
+        )
     )
 
-    fig = go.Figure(data=tracos, layout=layout)
+    fig.update_xaxes(fixedrange=False)
+    fig.update_yaxes(fixedrange=True)
+
+    if yaxis_range:
+        fig.update_yaxes(range=yaxis_range, fixedrange=True)
 
     config = {
         "scrollZoom": True,
@@ -680,7 +714,7 @@ def main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, timezone_padr
                 from main_estrela_config import ESTACOES_ESTRELA
 
                 if estacoes_info == ESTACOES_ESTRELA:
-                    usar_sobreposicao = st.toggle("🔁 Comparar estações", value=False)
+                    usar_sobreposicao = st.toggle("Comparar estações", value=False)
 
                 if usar_sobreposicao:
                     plotar_sobreposicao_estrela(estacoes_info, lang)
