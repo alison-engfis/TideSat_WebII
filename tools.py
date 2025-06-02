@@ -296,7 +296,7 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
          # Verifica se está rodando no app de Estrela
         if estacoes_info == ESTACOES_ESTRELA:
 
-            if estacao_selecionada == ESTACOES_ESTRELA["EST5"]:
+            if estacao_selecionada == "EST5":
 
                 max_nivel = 44
                 min_nivel = 30
