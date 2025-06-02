@@ -168,11 +168,13 @@ def carregar_dados(url):
         # Adiciona a coluna de data UTC
         df['datetime_utc'] = df['datetime'].dt.tz_localize('UTC')
 
-        # 🆕 Remove a última hora de dados
-        limite = df['datetime_utc'].max() - pd.Timedelta(hours=1)
-        df = df[df['datetime_utc'] <= limite]
-
         return df
+
+# Retorna uma cópia do DataFrame sem a última hora de dados (evitar o chicoteamento)
+def corte_ultima_1h(df):
+
+    limite = df['datetime_utc'].max() - pd.Timedelta(hours=1)
+    return df[df['datetime_utc'] <= limite]
 
 # Função do seletor de fuso
 def fuso_horario(lang):
@@ -619,6 +621,10 @@ def main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, timezone_padr
 
                 dados_filtrados = filtrar_dados(st.session_state["dados_estacao"], st.session_state["dados_inicio"],
                     st.session_state["dados_fim"], st.session_state["fuso_selecionado"])
+                
+                # Aplica o corte de 1h apenas para fins gráficos
+                dados_filtrados = corte_ultima_1h(dados_filtrados)
+
                 cota_alerta, cota_inundacao = cotas_notaveis(estacao_selecionada, estacoes_info)
 
                 plotar_grafico(url_estacao, estacoes_info, dados_filtrados, estacao_selecionada, cota_alerta, cota_inundacao, 
@@ -635,21 +641,7 @@ def main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, timezone_padr
 
         with col_fuso:
 
-            fuso_horario(lang)
-
-# No início da execução, restauramos a estação selecionada
-def restaurar_estacao_e_periodo():
-    if "estacao_selecionada" in st.session_state:
-        estacao_selecionada = st.session_state["estacao_selecionada"]
-
-    if "ultimo_periodo" in st.session_state:
-        ultimo_periodo = st.session_state["ultimo_periodo"]
-
-    # 🔹 Garante que o período anterior seja restaurado corretamente
-    if "ultimo_periodo_temp" in st.session_state:
-        st.session_state["ultimo_periodo"] = st.session_state.pop("ultimo_periodo_temp")         
-        
-restaurar_estacao_e_periodo()
+            fuso_horario(lang)     
 
 # [TEMPORÁRIAMENTE DESATIVADA (QUIÇÁ PARA SEMPRE)] Função para filtrar os dados pelo período selecionado
 def filtrar_dados(df, dados_inicio, dados_fim, fuso_selecionado):
