@@ -432,7 +432,6 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
     fig = go.Figure(data=tracos)
 
     fig.update_layout(
-        title="Sobreposição de Nível d'Água nas Estações de Estrela",
         xaxis_title="Data" if lang["lang_code"] == "pt" else "Date",
         yaxis_title="Nível (m)" if lang["lang_code"] == "pt" else "Water level (m)",
         font={'size': 18},
