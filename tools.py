@@ -1,7 +1,6 @@
 '''
-Arquivo que contém todas as ferramentas comuns tanto a main-alt.py, 
-como a main-estrela-alt.py e main-barroso.py. Ou seja, são funções base  
-para o correto funcionamento de ambos os scripts.
+Arquivo que contém todas as ferramentas comuns a todos os domínios. 
+Ou seja, são funções base para o correto funcionamento de ambos os scripts.
 
 '''
 
@@ -176,10 +175,6 @@ def fuso_horario(lang):
 
     # Lista de todos os fusos horários disponíveis
     fusos = pytz.all_timezones
-
-    # Verifica se há um fuso horário armazenado no session_state
-    if "fuso_selecionado" not in st.session_state:
-        st.session_state["fuso_selecionado"] = TIMEZONE_PADRAO  # Define o fuso padrão apenas na inicialização
 
     fuso_atual = st.session_state["fuso_selecionado"]
 
