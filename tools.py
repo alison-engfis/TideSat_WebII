@@ -295,12 +295,12 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
         if estacoes_info == ESTACOES_ESTRELA:
 
             # Usa os limites globais de EST1
-            df_est1 = carregar_dados(ESTACOES_ESTRELA["EST1"]["url"])
+            df_est1 = carregar_dados(ESTACOES_ESTRELA["EST2"]["url"])
 
-            if estacao_selecionada != "EST1":
+            if estacao_selecionada != "EST2":
                 
                 max_nivel = 21
-                min_nivel = df_est1['water_level(m)'].min()
+                min_nivel = 11
             else:
                 max_nivel = df_est1["water_level(m)"].max()
                 min_nivel = df_est1["water_level(m)"].min()
@@ -374,6 +374,7 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
 
     # Exibe o gráfico
     st.plotly_chart(fig, use_container_width=True, config=config)
+
 
 def plotar_sobreposicao_estrela(estacoes_info, lang):
 

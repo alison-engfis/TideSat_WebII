@@ -9,15 +9,6 @@ TIMEZONE_PADRAO = "America/Sao_Paulo"
 
 ################# CONFIGURAÇÕES DE ESTRELA #################
 ESTACOES_ESTRELA = {
-    "EST1": {
-        "descricao": "EST1 - Rio Taquari (Foz do Boa Vista)",
-        "url": "https://app.tidesatglobal.com/est1/est1_out.csv",
-        "coord": [-29.471768, -51.956703],
-        "descricao_imagem": "Estação EST1 - Porto de Estrela",
-        "caminho_imagem": "",
-        "cota_alerta": 17.00,
-        "cota_inundacao": 19.00
-    },
     "EST2": {
         "descricao": "EST2 - Rio Taquari (Porto de Estrela)",
         "url": "https://app.tidesatglobal.com/est2/est2_out.csv",
@@ -57,4 +48,4 @@ ESTACOES_ESTRELA = {
         
 }
 
-ESTACAO_PADRAO_ESTRELA = "EST1"
+ESTACAO_PADRAO_ESTRELA = "EST2"
