@@ -384,31 +384,42 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
     data_inicio = st.session_state["dados_inicio"]
     data_fim = st.session_state["dados_fim"]
 
-    estacoes_alvo = ["EST1", "EST2", "EST3", "EST6"]  # Excluímos a EST5
+    estacoes_alvo = ["EST1", "EST2", "EST3", "EST6"]
 
     tracos = []
     todos_valores = []
 
-    cor_linha, _, _, _, _ = obter_tema()
+    cor_linha_padrao, _, _, _, _ = obter_tema()
 
+    cores = {
+        "EST2": "blue",
+        "EST3": "green",
+        "EST6": "red"
+    }
     for cod in estacoes_alvo:
+
         est = estacoes_info.get(cod)
+
         if not est:
+
             continue
 
         try:
+
             df = carregar_dados(est["url"])
             df['datetime_ajustado'] = df['datetime_utc'].dt.tz_convert(fuso)
             df_filtrado = filtrar_dados(df, data_inicio, data_fim, fuso)
 
             todos_valores.extend(df_filtrado["water_level(m)"].tolist())
 
+            cor = cores.get(cod, cor_linha_padrao)
+
             tracos.append(go.Scatter(
                 x=np.array(df_filtrado["datetime_ajustado"]),
                 y=df_filtrado["water_level(m)"],
                 mode='lines',
                 name=est["descricao"],
-                line=dict(width=2)
+                line=dict(color=cor, width=2)
             ))
 
         except Exception as e:
@@ -423,10 +434,12 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
     delta_periodo = pd.to_datetime(data_fim) - pd.to_datetime(data_inicio)
 
     if delta_periodo == timedelta(hours=24):
+        
         med = np.median(todos_valores)
         yaxis_range = [med - 0.5, med + 0.5]
 
     elif delta_periodo >= timedelta(days=7):
+
         yaxis_range = [min(todos_valores), max(todos_valores)]
 
     fig = go.Figure(data=tracos)
