@@ -430,17 +430,18 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
         return
 
     # Eixo Y: ajuste para últimos 24h ou período total
-    yaxis_range = None
+    y_range = None
     delta_periodo = pd.to_datetime(data_fim) - pd.to_datetime(data_inicio)
 
     if delta_periodo == timedelta(hours=24):
         
-        med = np.median(todos_valores)
-        yaxis_range = [med - 0.5, med + 0.5]
+       val_min = min(todos_valores)
+       val_max = max(todos_valores)
+       y_range = [max(0, val_min - 0.5), val_max + 0.5]
 
     elif delta_periodo >= timedelta(days=7):
 
-        yaxis_range = [min(todos_valores), max(todos_valores)]
+        y_range = [min(todos_valores), max(todos_valores)]
 
     fig = go.Figure(data=tracos)
 
@@ -463,8 +464,8 @@ def plotar_sobreposicao_estrela(estacoes_info, lang):
     fig.update_xaxes(fixedrange=False)
     fig.update_yaxes(fixedrange=True)
 
-    if yaxis_range:
-        fig.update_yaxes(range=yaxis_range, fixedrange=True)
+    if y_range:
+        fig.update_yaxes(range=y_range, fixedrange=True)
 
     config = {
         "scrollZoom": True,
