@@ -698,6 +698,21 @@ def main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, timezone_padr
                             st.session_state["dados_fim"] = dados_fim
                             st.session_state["ultimo_periodo"] = "inteiro"
 
+                            from main_estrela_config import ESTACOES_ESTRELA
+                    
+                            if estacoes_info == ESTACOES_ESTRELA:
+                                try:
+                                    df_est6 = carregar_dados(ESTACOES_ESTRELA["EST6"]["url"])
+                                    df_est6["datetime_ajustado"] = df_est6["datetime_utc"].dt.tz_convert(st.session_state["fuso_selecionado"])
+                                    inicio_est6 = df_est6["datetime_ajustado"].min().date()
+
+                                    # Só ajusta se estiver iniciando com o período total (primeira execução)
+                                    if dados_inicio < inicio_est6:
+                                        dados_inicio = inicio_est6
+
+                                except Exception as e:
+                                    st.warning(f"Não foi possível ajustar a data inicial com base na EST6: {e}")
+
                     with col_sete:
                         if st.button(f"{lang['last_7_days']}", use_container_width=True):
                             st.session_state["dados_inicio"] = (dados['datetime_ajustado'].max() - timedelta(days=7)).date()
