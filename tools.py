@@ -291,19 +291,14 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
 
         from main_estrela_config import ESTACOES_ESTRELA
 
-        # Verifica se está rodando no app de Estrela
+         # Verifica se está rodando no app de Estrela
         if estacoes_info == ESTACOES_ESTRELA:
 
             # Usa os limites globais de EST1
             df_est1 = carregar_dados(ESTACOES_ESTRELA["EST2"]["url"])
 
-            if estacao_selecionada != "EST2":
-                
-                max_nivel = 21
-                min_nivel = 11
-            else:
-                max_nivel = df_est1["water_level(m)"].max()
-                min_nivel = df_est1["water_level(m)"].min()
+            max_nivel = 21
+            min_nivel = 11
 
         else:
             # Comportamento padrão
