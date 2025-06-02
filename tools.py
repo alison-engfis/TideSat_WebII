@@ -15,6 +15,7 @@ import pandas as pd
 import pytz
 import hmac 
 import numpy as np
+import plotly.graph_objs as go
 
 # Função para configurar a autenticação por senha (para tidesat-barroso)
 def checar_senha(lang):
@@ -374,6 +375,60 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
     # Exibe o gráfico
     st.plotly_chart(fig, use_container_width=True, config=config)
 
+def plotar_sobreposicao_estrela(estacoes_info, lang):
+
+    st.markdown("### 📊 Comparação entre Estações de Estrela")
+
+    # Pega o fuso e o período selecionado
+    fuso = st.session_state["fuso_selecionado"]
+    data_inicio = st.session_state["dados_inicio"]
+    data_fim = st.session_state["dados_fim"]
+
+    # Estações fixas da cidade de Estrela
+    estacoes_alvo = ["EST1", "EST2", "EST3", "EST5", "EST6"]
+    tracos = []
+
+    for cod in estacoes_alvo:
+        est = estacoes_info.get(cod)
+        if not est:
+            continue
+
+        try:
+            df = carregar_dados(est["url"])
+            df['datetime_ajustado'] = df['datetime_utc'].dt.tz_convert(fuso)
+            df_filtrado = filtrar_dados(df, data_inicio, data_fim, fuso)
+
+            tracos.append(go.Scatter(
+                x=np.array(df_filtrado["datetime_ajustado"]),
+                y=df_filtrado["water_level(m)"],
+                mode='lines',
+                name=est["descricao"]
+            ))
+
+        except Exception as e:
+            st.warning(f"Erro ao carregar dados de {cod}: {e}")
+
+    if not tracos:
+        st.error("Nenhum dado foi carregado para as estações selecionadas.")
+        return
+
+    layout = go.Layout(
+        title="Sobreposição de Nível d'Água nas Estações de Estrela",
+        xaxis_title="Data/Hora",
+        yaxis_title="Nível (m)",
+        height=550
+    )
+
+    fig = go.Figure(data=tracos, layout=layout)
+
+    config = {
+        "scrollZoom": True,
+        "responsive": True,
+        "displaylogo": False
+    }
+
+    st.plotly_chart(fig, use_container_width=True, config=config)
+
 # Função para obter as configurações do tema
 def obter_tema():
     ms = st.session_state
@@ -629,6 +684,10 @@ def main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, timezone_padr
 
                 plotar_grafico(url_estacao, estacoes_info, dados_filtrados, estacao_selecionada, cota_alerta, cota_inundacao, 
                                st.session_state["dados_inicio"], st.session_state["dados_fim"], lang)
+                
+                if st.button("🔍 Comparar estações de Estrela"):
+        
+                    plotar_sobreposicao_estrela(estacoes_info, lang)
 
     _, col_modo, col_fuso, _ = st.columns([0.5, 1, 1.3, 0.5], gap="small", vertical_alignment="top")
 
