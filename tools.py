@@ -299,7 +299,7 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
             if estacao_selecionada == "EST5":
 
                 max_nivel = 44
-                min_nivel = 30
+                min_nivel = 40
 
             else:
 
