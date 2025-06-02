@@ -299,7 +299,7 @@ def plotar_grafico(url, estacoes_info, dados_filtrados, estacao_selecionada, cot
             if estacao_selecionada == ESTACOES_ESTRELA["EST5"]:
 
                 max_nivel = 44
-                min_nivel = df['water_level(m)'].min()
+                min_nivel = 30
 
             else:
 
