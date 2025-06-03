@@ -775,7 +775,7 @@ def main(estacoes_info, estacao_padrao, logotipo, html_logo, lang, timezone_padr
                     plotar_grafico(url_estacao, estacoes_info, dados_filtrados, estacao_selecionada, cota_alerta, cota_inundacao, 
                                    st.session_state["dados_inicio"], st.session_state["dados_fim"], lang)
 
-    _, col_modo, col_fuso, _ = st.columns([0.5, 1, 1.3, 0.5], gap="small", vertical_alignment="top")
+    _, col_modo, col_fuso, _ = st.columns([0.3, 1, 1.4, 0.3], gap="small", vertical_alignment="top")
 
     
     with st.container():
